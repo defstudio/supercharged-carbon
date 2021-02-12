@@ -1,0 +1,48 @@
+{
+    "name": "defstudio/supercharged-carbon",
+    "description": "A supercharged Carbon decorator",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabio Ivona",
+            "email": "fabio.ivona@defstudio.it",
+            "homepage": "https://defstudio.it",
+            "role": "Developer"
+        },
+        {
+            "name": "Daniele Romeo",
+            "email": "danieleromeo@defstudio.it",
+            "homepage": "https://defstudio.it",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^8.0",
+        "nesbot/carbon": "^2.31"
+    },
+    "autoload": {
+        "psr-4": {
+            "DefStudio\\SuperchargedCarbon\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DefStudio\\SuperchargedCarbon\\SuperchargedCarbonServiceProvider"
+            ]
+        }
+    }
+}
