@@ -111,12 +111,12 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
         }
 
         Carbon::macro('isHoliday', function () use ($holidays) {
-            if ($this->isSunday()) {
+            if (!$this->isWeekday()) {
                 return true;
             }
 
             foreach ($holidays as $holiday_check_method => $holiday_check_macro) {
-                if ($this->$holiday_check_method) {
+                if ($this->$holiday_check_method()) {
                     return true;
                 }
             }
