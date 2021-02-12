@@ -73,6 +73,12 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
 
                 return $this->month === 1 && $this->day === 6;
             },
+            'isDayBeforeChristmas'        => function () {
+                return $this->month === 12 && $this->day === 24;
+            },
+            'isChristmas'                 => function () {
+                return $this->month === 12 && $this->day === 25;
+            },
             'isSaintStephenDay'           => function () {
                 // Saint Stephen's Day, also called the Feast of Saint Stephen, is a Christian saint's day
                 // to commemorate Saint Stephen, the first Christian martyr, celebrated on 26 December
@@ -128,12 +134,11 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
             return !$this->isHoliday();
         });
 
-        Carbon::macro('addWorkdays', function ($count = 1) {
-            $start_date = $this->clone()->toImmutable();
-            $this->addDays($count);
-            for ($i = 1; $i <= $count; $i++) {
-                if (carbon($start_date)->addDays($i)->isHoliday()) {
-                    $this->addDay();
+        Carbon::macro('addWorkdays', function ($days_to_add = 1) {
+            while ($days_to_add > 0) {
+                $this->addDay();
+                if ($this->isWorkday()) {
+                    $days_to_add--;
                 }
             }
             return $this;
