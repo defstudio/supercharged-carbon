@@ -132,7 +132,7 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
             $start_date = $this->clone()->toImmutable();
             $this->addDays($count);
             for ($i = 1; $i <= $count; $i++) {
-                if ($start_date->addDays($i)->isHoliday()) {
+                if (carbon($start_date)->addDays($i)->isHoliday()) {
                     $this->addDay();
                 }
             }
