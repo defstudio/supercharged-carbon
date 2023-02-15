@@ -9,12 +9,12 @@
 
 /** @noinspection PhpUndefinedFieldInspection */
 
-use Carbon\CarbonInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Carbon;
 
 
 if (!function_exists('carbon')) {
-    function carbon(mixed $datetime): CarbonInterface|null
+    function carbon(mixed $datetime): Carbon|null
     {
         return Carbon::make($datetime);
     }
