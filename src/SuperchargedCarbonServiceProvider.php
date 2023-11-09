@@ -111,12 +111,12 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
                 return $this->month === 5 && $this->day === 1;
             },
             'isEasterDay' => function () {
-                $easter = carbon("$this->year-03-21")->addDays(\easter_days($this->year));
+                $easter = carbon(easter_date($this->year));
 
                     return $this->isSameDayAs($easter);
             },
             'isEasterMonday' => function () {
-                $easter = carbon("$this->year-03-21")->addDays(\easter_days($this->year));
+                $easter = carbon(easter_date($this->year));
 
                     return $this->isSameDayAs($easter->addDay());
             },
