@@ -12,6 +12,7 @@ namespace Defstudio\SuperchargedCarbon;
 
 
 use Carbon\Carbon\CarbonInterface;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 
@@ -124,9 +125,11 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
 
         foreach ($holidays as $holiday_check_method => $holiday_check_macro) {
             Carbon::macro($holiday_check_method, $holiday_check_macro);
+            CarbonImmutable::macro($holiday_check_method, $holiday_check_macro);
         }
 
-        Carbon::macro('isHoliday', function () use ($holidays) {
+
+        $holiday_closure = function () use ($holidays) {
             if (!$this->isWeekday()) {
                 return true;
             }
@@ -138,13 +141,13 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
             }
 
             return false;
-        });
+        };
 
-        Carbon::macro('isWorkday', function () {
+        $workday_closure = function () {
             return !$this->isHoliday();
-        });
+        };
 
-        Carbon::macro('addWorkdays', function ($days_to_add = 1) {
+        $add_workdays_closure = function ($days_to_add = 1) {
             while ($days_to_add > 0) {
                 $this->addDay();
                 if ($this->isWorkday()) {
@@ -152,6 +155,15 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
                 }
             }
             return $this;
-        });
+        };
+
+        Carbon::macro('isHoliday', $holiday_closure);
+        CarbonImmutable::macro('isHoliday', $holiday_closure);
+
+        Carbon::macro('isWorkday', $workday_closure);
+        CarbonImmutable::macro('isWorkday', $workday_closure);
+
+        Carbon::macro('addWorkdays', $add_workdays_closure);
+        CarbonImmutable::macro('addWorkdays', $add_workdays_closure);
     }
 }
