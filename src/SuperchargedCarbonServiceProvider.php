@@ -11,7 +11,7 @@
 namespace Defstudio\SuperchargedCarbon;
 
 
-use Carbon\Carbon\CarbonInterface;
+use Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
@@ -26,11 +26,11 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
 {
 
 
-    public function register()
+    public function register(): void
     {
 
         $holidays = [
-            'isLiberationDay'             => function () {
+            'isLiberationDay' => function () {
                 // Liberation Day is a national holiday in Italy that commemorates the end of the fascist regime
                 // and of the Nazi Germany occupation during World War II and the victory of the Resistance in Italy
                 // https://en.wikipedia.org/wiki/Liberation_Day_(Italy)
@@ -40,7 +40,7 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
 
                 return $this->month === 4 && $this->day === 25;
             },
-            'isRepublicDay'               => function () {
+            'isRepublicDay' => function () {
                 // Republic Day  is the Italian National Day and Republic Day, which is celebrated on 2 June each year
                 // The day commemorates the institutional referendum held by universal suffrage in 1946,
                 // in which the Italian people were called to the polls to decide on the form of government
@@ -61,40 +61,40 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
 
                 return $this->month === 12 && $this->day === 8;
             },
-            'isAssumptionOfMaryFeast'     => function () {
+            'isAssumptionOfMaryFeast' => function () {
                 // Assumption Day on 15 August is a nationwide public holiday in Andorra, Austria, Belgium, [...], Italy
                 // https://en.wikipedia.org/wiki/Assumption_of_Mary#Public_holidays
 
                 return $this->month === 8 && $this->day === 15;
             },
-            'isEpiphany'                  => function () {
+            'isEpiphany' => function () {
                 // In Italy, Epiphany is a national holiday and is associated with the figure of the Befana
                 // (the name being a corruption of the word Epifania)
                 // https://en.wikipedia.org/wiki/Epiphany_(holiday)#Italy
 
                 return $this->month === 1 && $this->day === 6;
             },
-            'isDayBeforeChristmas'        => function () {
+            'isDayBeforeChristmas' => function () {
                 return $this->month === 12 && $this->day === 24;
             },
-            'isChristmas'                 => function () {
+            'isChristmas' => function () {
                 return $this->month === 12 && $this->day === 25;
             },
-            'isSaintStephenDay'           => function () {
+            'isSaintStephenDay' => function () {
                 // Saint Stephen's Day, also called the Feast of Saint Stephen, is a Christian saint's day
                 // to commemorate Saint Stephen, the first Christian martyr, celebrated on 26 December
                 // https://en.wikipedia.org/wiki/Saint_Stephen%27s_Day
 
                 return $this->month === 12 && $this->day === 26;
             },
-            'isSaintSylvesterDay'         => function () {
+            'isSaintSylvesterDay' => function () {
                 // In Italy, New Year's Eve (Italian: Vigilia di Capodanno or Notte di San Silvestro)
                 // is celebrated by the observation of traditional rituals, such as wearing red underwear.
                 // https://en.wikipedia.org/wiki/New_Year%27s_Eve#Italy
 
                 return $this->month === 12 && $this->day === 31;
             },
-            'isWorkersDay'                => function () {
+            'isWorkersDay' => function () {
                 // The first May Day celebration in Italy took place in 1890
                 // It was abolished under the Fascist regime and immediately restored after the Second World War.
                 // (During the fascist period, a "Holiday of the Italian Labour" was celebrated on 21 April)
@@ -148,13 +148,15 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
         };
 
         $add_workdays_closure = function ($days_to_add = 1) {
+            $date = $this;
+
             while ($days_to_add > 0) {
-                $this->addDay();
-                if ($this->isWorkday()) {
+                $date = $date->addDay();
+                if ($date->isWorkday()) {
                     $days_to_add--;
                 }
             }
-            return $this;
+            return $date;
         };
 
         Carbon::macro('isHoliday', $holiday_closure);
