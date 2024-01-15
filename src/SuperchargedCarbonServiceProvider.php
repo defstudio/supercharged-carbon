@@ -129,15 +129,25 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
         }
 
 
-        $holiday_closure = function (bool $saturdayIsWorkday = false) use ($holidays) {
-            if($this->isSaturday()){
-                if(!$saturdayIsWorkday){
-                    return true;
-                }
-            }elseif ($this->isSunday()) {
+        $holiday_closure = function (array|int|null $extraHolidays = CarbonInterface::SATURDAY) use ($holidays) {
+            if ($this->isSunday()) {
                 return true;
             }
-
+            
+            if(is_int($extraHolidays)){
+                $extraHolidays = [$extraHolidays];
+            }
+            
+            if($extraHolidays === null){
+                $extraHolidays = [];
+            }
+            
+            foreach ($extraHolidays as $extra_holiday){
+                if($this->isDayOfWeek($extra_holiday)){
+                    return true;
+                }
+            }
+            
             foreach ($holidays as $holiday_check_method => $holiday_check_macro) {
                 if ($this->$holiday_check_method()) {
                     return true;
@@ -147,14 +157,14 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
             return false;
         };
 
-        $workday_closure = function (bool $saturdayIsWorkday = false) {
-            return !$this->isHoliday($saturdayIsWorkday);
+        $workday_closure = function (array|int|null $extraHolidays = CarbonInterface::SATURDAY) {
+            return !$this->isHoliday($extraHolidays);
         };
 
-        $add_workdays_closure = function (int $days_to_add = 1, bool $saturdayIsWorkday = false) {
+        $add_workdays_closure = function (int $days_to_add = 1, array|int|null $extraHolidays = CarbonInterface::SATURDAY) {
             while ($days_to_add > 0) {
                 $this->addDay();
-                if ($this->isWorkday($saturdayIsWorkday)) {
+                if ($this->isWorkday($extraHolidays)) {
                     $days_to_add--;
                 }
             }
