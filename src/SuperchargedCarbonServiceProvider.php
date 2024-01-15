@@ -11,8 +11,8 @@
 namespace Defstudio\SuperchargedCarbon;
 
 
-use Carbon\Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 
@@ -129,8 +129,12 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
         }
 
 
-        $holiday_closure = function () use ($holidays) {
-            if (!$this->isWeekday()) {
+        $holiday_closure = function (bool $saturdayIsWorkday = false) use ($holidays) {
+            if($this->isSaturday()){
+                if(!$saturdayIsWorkday){
+                    return true;
+                }
+            }elseif ($this->isSunday()) {
                 return true;
             }
 
@@ -143,14 +147,14 @@ class SuperchargedCarbonServiceProvider extends ServiceProvider
             return false;
         };
 
-        $workday_closure = function () {
-            return !$this->isHoliday();
+        $workday_closure = function (bool $saturdayIsWorkday = false) {
+            return !$this->isHoliday($saturdayIsWorkday);
         };
 
-        $add_workdays_closure = function ($days_to_add = 1) {
+        $add_workdays_closure = function (int $days_to_add = 1, bool $saturdayIsWorkday = false) {
             while ($days_to_add > 0) {
                 $this->addDay();
-                if ($this->isWorkday()) {
+                if ($this->isWorkday($saturdayIsWorkday)) {
                     $days_to_add--;
                 }
             }
